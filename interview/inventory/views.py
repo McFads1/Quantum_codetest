@@ -1,6 +1,10 @@
+
+from django.db.models import Q
+
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework.exceptions import ValidationError
 
 from interview.inventory.models import Inventory, InventoryLanguage, InventoryTag, InventoryType
 from interview.inventory.schemas import InventoryMetaData
@@ -32,7 +36,18 @@ class InventoryListCreateView(APIView):
         return Response(serializer.data, status=200)
     
     def get_queryset(self):
-        return self.queryset.all()
+        queryset = self.queryset
+        created_after = self.request.query_params.get('created_after', None)
+        
+        if created_after:
+            try:
+                created_after = int(created_after) # String Comparators don't work
+                queryset = queryset.filter(Q(metadata__year__gte=created_after))
+                return queryset
+            except ValueError:
+                raise ValidationError({'created_after': 'Invalid date format'})
+
+        return queryset.all()
     
 
 class InventoryRetrieveUpdateDestroyView(APIView):
