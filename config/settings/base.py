@@ -28,7 +28,7 @@ SECRET_KEY = '#lz1-_pf78xg3qxohts(mo^vt^0z0q3d8fm7em=nz#2is_)saz'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
+AUTH_USER_MODEL = 'profiles.UserProfile'
 
 # Application definition
 
@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'interview.core',
     'interview.inventory',
-    'interview.order'
+    'interview.order',
+    'interview.profiles',
 ]
 
 MIDDLEWARE = [
